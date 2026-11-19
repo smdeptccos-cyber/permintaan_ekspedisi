@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Supply Management Login</title>
+
+<style>
+
+body{
+    margin:0;
+    font-family:Segoe UI, Arial, sans-serif;
+    background:#f4f6f9;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+.container{
+    width:350px;
+    background:#fff;
+    padding:30px;
+    border-radius:12px;
+    box-shadow:0 4px 15px rgba(0,0,0,.15);
+}
+
+h2{
+    text-align:center;
+    color:#0078D4;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    box-sizing:border-box;
+    border:1px solid #ccc;
+    border-radius:6px;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    margin-top:15px;
+    border:none;
+    border-radius:6px;
+    background:#0078D4;
+    color:white;
+    cursor:pointer;
+    font-size:14px;
+}
+
+button:hover{
+    background:#005A9E;
+}
+
+#hasil{
+    margin-top:15px;
+    text-align:center;
+    font-weight:bold;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Supply Management Login</h2>
+
+    <input
+        type="text"
+        id="username"
+        placeholder="Username">
+
+    <input
+        type="password"
+        id="password"
+        placeholder="Password">
+
+    <button onclick="login()">
+        LOGIN
+    </button>
+
+    <div id="hasil"></div>
+
+</div>
+
+<script>
+
+const FLOW_URL =
+"https://default6b3257a311ab43a78708fb17f85c0c.4d.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/05/workflows/fee33197e2124e1abfa59d718c902769/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=DrvVl370ZR8989oMAVXanYf6wL9hm9FKz_whSAgfeNU";
+
+async function login(){
+
+    const username =
+    document.getElementById("username").value;
+
+    const password =
+    document.getElementById("password").value;
+
+    document.getElementById("hasil").innerHTML =
+    "Memproses...";
+
+    try{
+
+        const response = await fetch(
+            FLOW_URL,
+            {
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify({
+                    username:username,
+                    password:password
+                })
+            }
+        );
+
+        const result =
+        await response.json();
+
+        console.log(result);
+
+        if(result.status === "success"){
+
+            document.getElementById("hasil").style.color =
+            "green";
+
+            document.getElementById("hasil").innerHTML =
+            "✅ Login Berhasil";
+
+            localStorage.setItem(
+                "username",
+                username
+            );
+
+            setTimeout(function(){
+
+                window.location.href =
+                "dashboard.html";
+
+            },1000);
+
+        }
+        else{
+
+            document.getElementById("hasil").style.color =
+            "red";
+
+            document.getElementById("hasil").innerHTML =
+            "❌ Username atau Password salah";
+        }
+
+    }
+    catch(error){
+
+        console.error(error);
+
+        document.getElementById("hasil").style.color =
+        "red";
+
+        document.getElementById("hasil").innerHTML =
+        "❌ Gagal menghubungi server";
+
+    }
+}
+
+</script>
+
+</body>
+</html>
